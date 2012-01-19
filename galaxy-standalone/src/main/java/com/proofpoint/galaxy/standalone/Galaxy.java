@@ -16,6 +16,7 @@ import org.iq80.cli.GitLikeCommandParser.Builder;
 import org.iq80.cli.Option;
 import org.iq80.cli.Options;
 import org.iq80.cli.ParseException;
+import org.iq80.cli.SuggestCommand;
 import org.iq80.cli.model.GlobalMetadata;
 
 import java.io.IOException;
@@ -47,6 +48,7 @@ public class Galaxy
         Builder<GalaxyCommand> builder = GitLikeCommandParser.parser("galaxy", GalaxyCommand.class)
                 .withDescription("cloud management system")
                 .defaultCommand(HelpCommand.class)
+                .addCommand(SuggestCommand.class)
                 .addCommand(HelpCommand.class)
                 .addCommand(ShowCommand.class)
                 .addCommand(InstallCommand.class)
@@ -155,6 +157,32 @@ public class Galaxy
                 TablePrinter tablePrinter = new TablePrinter(shortId, ip, status, instanceType, location);
                 tablePrinter.print(agents);
             }
+        }
+    }
+
+    @Command(name = "suggest", description = "Display command line suggestions")
+    public static class SuggestCommand extends GalaxyCommand
+    {
+        @Options
+        public GlobalMetadata metadata;
+
+        @Arguments
+        public List<String> arguments = Lists.newArrayList();
+
+        public Void call()
+        {
+            // ewww  TODO: fix this
+            org.iq80.cli.SuggestCommand command = new org.iq80.cli.SuggestCommand();
+            command.metadata = metadata;
+            command.arguments = arguments;
+            command.run();
+            return null;
+        }
+
+        @Override
+        public void execute(Commander commander)
+                throws Exception
+        {
         }
     }
 
